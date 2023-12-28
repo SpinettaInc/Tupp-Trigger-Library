@@ -4,19 +4,22 @@
     const apiBaseURL = "https://tupp.io/api/v1/prediction/";
 
     /**
-     * Handles events for elements with class 'tupp-trigger'.
-     * @param {Event} event The event object.
+     * Main event handler for elements with 'tupp-trigger' class.
+     * @param {Event} event The DOM event triggered.
      */
     function handleEvent(event) {
         const element = event.target;
-        const value = element.value;
         const chatflowID = element.getAttribute('data-tupp-chatflow-id');
+        const sourceID = element.getAttribute('data-tupp-source-id');
+        const sourceClass = element.getAttribute('data-tupp-source-class');
         const targetID = element.getAttribute('data-tupp-target-id');
         const targetClass = element.getAttribute('data-tupp-target-class');
         const targetAction = element.getAttribute('data-tupp-target-action');
         const targetStyle = element.getAttribute('data-tupp-target-style');
 
-        if (chatflowID) {
+        let value = sourceID || sourceClass ? getValueFromSource(sourceID, sourceClass) : element.value;
+
+        if (chatflowID && value !== null) {
             query({ question: value }, apiBaseURL + chatflowID)
                 .then(response => {
                     applyResponseToTarget(response, targetID, targetClass, targetAction, targetStyle);
@@ -26,18 +29,27 @@
     }
 
     /**
-     * Applies the response to the targeted HTML element.
-     * @param {Object} response The response from the API.
-     * @param {string} targetID The ID of the target element.
-     * @param {string} targetClass The class of the target elements.
-     * @param {string} targetAction The action to perform (append, prepend, replace).
-     * @param {string} targetStyle The inline style to apply to the target element.
+     * Retrieves the value from the source element defined by ID or class.
+     * @param {string} sourceID The ID of the source element.
+     * @param {string} sourceClass The class of the source elements.
+     * @returns {string|null} The value from the source element or null if not found.
      */
-    function applyResponseToTarget(response, targetID, targetClass, targetAction, targetStyle) {
-        const targetElements = getTargetElements(targetID, targetClass);
-        targetElements.forEach(element => {
-            applyStyleToElement(element, targetStyle);
-            updateElementContent(element, response, targetAction);
+    function getValueFromSource(sourceID, sourceClass) {
+        const sourceElement = sourceID ? document.getElementById(sourceID) :
+                             sourceClass ? document.querySelector('.' + sourceClass) : null;
+        return sourceElement ? sourceElement.value : null;
+    }
+
+    /**
+     * Applies the API response to the targeted HTML elements.
+     * @param {Object} response The response object from the API.
+     * @param {Object} targetDetails Object containing details of the target element.
+     */
+    function applyResponse(response, targetDetails) {
+        const targets = getTargets(targetDetails.id, targetDetails.class);
+        targets.forEach(target => {
+            applyStyle(target, targetDetails.style);
+            updateContent(target, response, targetDetails.action);
         });
     }
 
@@ -47,14 +59,9 @@
      * @param {string} targetClass The class of the target elements.
      * @returns {Array} Array of target elements.
      */
-    function getTargetElements(targetID, targetClass) {
-        if (targetID) {
-            const element = document.getElementById(targetID);
-            return element ? [element] : [];
-        } else if (targetClass) {
-            return Array.from(document.getElementsByClassName(targetClass));
-        }
-        return [];
+    function getTargets(targetID, targetClass) {
+        return targetID ? [document.getElementById(targetID)] :
+               targetClass ? Array.from(document.getElementsByClassName(targetClass)) : [];
     }
 
     /**
@@ -62,36 +69,30 @@
      * @param {HTMLElement} element The element to style.
      * @param {string} style The inline style to apply.
      */
-    function applyStyleToElement(element, style) {
+    function applyStyle(element, style) {
         if (style && element) {
             element.style.cssText += style;
         }
     }
 
     /**
-     * Updates the content of an element based on the action.
+     * Updates the content of an element based on the specified action.
      * @param {HTMLElement} element The element to update.
      * @param {Object} response The response data.
      * @param {string} action The action to perform (append, prepend, replace).
      */
-    function updateElementContent(element, response, action) {
+    function updateContent(element, response, action) {
         const content = typeof response === 'object' ? JSON.stringify(response) : response;
         switch (action) {
-            case 'append':
-                element.innerHTML += content;
-                break;
-            case 'prepend':
-                element.innerHTML = content + element.innerHTML;
-                break;
-            case 'replace':
-                element.innerHTML = content;
-                break;
+            case 'append': element.innerHTML += content; break;
+            case 'prepend': element.innerHTML = content + element.innerHTML; break;
+            case 'replace': element.innerHTML = content; break;
         }
     }
 
     /**
-     * Makes an API call.
-     * @param {Object} data The data to send in the API request.
+     * Performs the API call.
+     * @param {Object} data The data to be sent in the API request.
      * @param {string} chatflowURL The full URL to the chatflow API endpoint.
      * @returns {Promise<Object>} The API response.
      */
@@ -102,49 +103,54 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
             });
-
-            switch (response.status) {
-                case 200: // OK
-                    const responseData = await response.json();
-                    return responseData.text ? responseData.text : responseData;
-                case 400: // Bad Request
-                    console.error('Error 400: Bad request');
-                    break;
-                case 401: // Unauthorized
-                    console.error('Error 401: Unauthorized');
-                    break;
-                case 403: // Forbidden
-                    console.error('Error 403: Forbidden');
-                    break;
-                case 404: // Not Found
-                    console.error('Error 404: Not found');
-                    break;
-                case 500: // Internal Server Error
-                    console.error('Error 500: Internal Server Error');
-                    break;
-                default:
-                    console.error('Error:', response.status);
-            }
+            return await handleResponse(response);
         } catch (error) {
             console.error('API call failed:', error);
         }
     }
 
-    // Expose the library to the global object
-    global.TuppTrigger = {
-        init: initializeLibrary
-    };
+    /**
+     * Handles the API response based on the HTTP status code.
+     * @param {Response} response The response object from the API call.
+     * @returns {Promise<Object>} The processed response object.
+     */
+    async function handleResponse(response) {
+        switch (response.status) {
+            case 200:
+                const responseData = await response.json();
+                return responseData.text ? responseData.text : responseData;
+            case 400: case 401: case 403: case 404: case 500:
+                console.error(`Error ${response.status}: ${response.statusText}`);
+                break;
+            default:
+                console.error('Error:', response.status);
+        }
+    }
 
     /**
      * Initializes the Tupp Trigger library.
+     * Adds event listeners to elements with the 'tupp-trigger' class based on their tag name.
      */
-    function initializeLibrary() {
-        const elements = document.querySelectorAll('.tupp-trigger');
-        elements.forEach(element => {
-            const eventType = element.tagName === 'INPUT' ? 'input' : 'change';
+    function initialize() {
+        document.querySelectorAll('.tupp-trigger').forEach(element => {
+            let eventType;
+            switch (element.tagName) {
+                case 'INPUT':
+                case 'TEXTAREA':
+                    eventType = 'input';
+                    break;
+                case 'SELECT':
+                    eventType = 'change';
+                    break;
+                default:
+                    return; // Skip other elements
+            }
             element.addEventListener(eventType, handleEvent);
         });
     }
+
+    // Expose the library to the global object
+    global.TuppTrigger = { init: initialize };
 
 }(window, document));
 
