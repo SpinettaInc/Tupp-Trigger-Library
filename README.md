@@ -1,19 +1,19 @@
 # Tupp Trigger Library
 
-Tupp Trigger is a lightweight JavaScript library for dynamically handling events on HTML form elements, such as `<input>` and `<select>`. It is designed to make API calls and manipulate other page elements based on the response. This library is especially useful for creating interactive and responsive web interfaces.
+Tupp Trigger is a versatile JavaScript library designed to enhance the interactivity of web forms. It facilitates easy integration of HTML form elements with API calls and enables dynamic manipulation of other page elements based on API responses.
 
 ## Features
 
-- Automatic event handling for input and select elements
-- Easy API integration with custom endpoints
-- Dynamic manipulation of page elements based on API responses
-- Flexible and customizable through data attributes
+- **Broad Event Handling**: Supports `input`, `select`, and `textarea` elements.
+- **Simplified API Integration**: Configurable API endpoint through data attributes.
+- **Dynamic Element Manipulation**: Modify content and style of targeted elements in response to API calls.
+- **Flexible Data Source**: Extracts data from specified source elements or from the triggering element itself.
 
 ## Installation
 
 ### Via CDN
 
-Include the Tupp Trigger library in your HTML file using the jsDelivr CDN:
+Include the Tupp Trigger library in your HTML file using jsDelivr:
 
 ```html
 <script src="https://cdn.jsdelivr.net/gh/SpinettaInc/Tupp-Trigger-Library/tupp-trigger.min.js"></script>
@@ -32,11 +32,13 @@ Include the Tupp Trigger library in your HTML file using the jsDelivr CDN:
 
 ### HTML Setup
 
-Add the class `tupp-trigger` to your form elements and use the following data attributes:
+Add the class `tupp-trigger` to your form elements. Configure the library using the following data attributes:
 
-- `data-tupp-chatflow-id`: The UUID part of your API endpoint.
-- `data-tupp-target-id`: (Optional) The ID of the target element to manipulate.
-- `data-tupp-target-class`: (Optional) The class of target elements to manipulate.
+- `data-tupp-chatflow-id`: The UUID of your API endpoint.
+- `data-tupp-source-id`: (Optional) The ID of the source element to extract data from.
+- `data-tupp-source-class`: (Optional) The class of source elements to extract data from.
+- `data-tupp-target-id`: (Optional) The ID of the target element for dynamic manipulation.
+- `data-tupp-target-class`: (Optional) The class of target elements for dynamic manipulation.
 - `data-tupp-target-action`: (Optional) Action to perform on the target element (`append`, `prepend`, `replace`).
 - `data-tupp-target-style`: (Optional) Inline style to apply to the target element.
 
@@ -44,7 +46,15 @@ Example:
 
 ```html
 <input type="text" class="tupp-trigger" data-tupp-chatflow-id="your-uuid" data-tupp-target-id="result" data-tupp-target-action="replace">
-<div id="result"></div>
+<div id="result">Original Text</div>
+```
+
+Submit button example, using another element as a source:
+
+```html
+<input type="text" id="search_input">
+<input type="submit"  value="Search" class="tupp-trigger" data-tupp-chatflow-id="your-uuid" data-tupp-source-id="search_input" data-tupp-target-id="result" data-tupp-target-action="replace">
+<div id="result">Original Text</div>
 ```
 
 ### JavaScript Initialization
@@ -57,15 +67,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 ```
 
-## API Reference
-
-### `TuppTrigger.init()`
-
-Initializes the library and attaches event listeners to elements with the `tupp-trigger` class.
-
 ## Contributing
 
-Contributions to the Tupp Trigger library are welcome. Please submit pull requests to the GitHub repository.
+Contributions to the Tupp Trigger library are welcome.
 
 ## License
 
