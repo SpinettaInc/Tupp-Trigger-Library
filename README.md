@@ -1,6 +1,10 @@
 # Tupp Trigger Library
 
-Tupp Trigger is a versatile JavaScript library designed to enhance the interactivity of web forms. It facilitates easy integration of HTML form elements with API calls and enables dynamic manipulation of other page elements based on API responses.
+Tupp Trigger is a versatile JavaScript library designed to enhance the interactivity of web elements. It seamlessly integrates HTML elements with Tupp.io API calls, enabling dynamic manipulation of page elements based on API responses. The library acts as a client for the Tupp.io API, providing a user-friendly way to interact with various web elements.
+
+## Pre-requisites
+
+Before using the this library, you must have an active account on [Tupp.io](https://tupp.io). Tupp.io allows you to create custom chatflows and logic, which can then be utilized within your web application using this library. Each chatflow in Tupp.io provides a unique UUID, which is essential for configuring this library in your project.
 
 ## Features
 
@@ -15,7 +19,7 @@ Tupp Trigger is a versatile JavaScript library designed to enhance the interacti
 
 ### Via CDN
 
-Include the Tupp Trigger library in your HTML file using jsDelivr:
+Include this library in your HTML file using jsDelivr:
 
 ```html
 <script src="https://cdn.jsdelivr.net/gh/SpinettaInc/Tupp-Trigger-Library/tupp-trigger.min.js"></script>
@@ -34,9 +38,9 @@ Include the Tupp Trigger library in your HTML file using jsDelivr:
 
 ### HTML Setup
 
-Add the class `tupp-trigger` to your form elements. Configure the library using the following data attributes:
+Add the class `tupp-trigger` to your HTML elements. Configure the library using the following data attributes:
 
-- `data-tupp-chatflow-id`: The UUID of your API endpoint.
+- `data-tupp-chatflow-id`: The UUID of your Tupp.io API endpoint.
 - `data-tupp-source-id`: (Optional) The ID of the source element to extract data from.
 - `data-tupp-source-class`: (Optional) The class of source elements to extract data from.
 - `data-tupp-target-id`: (Optional) The ID of the target element for dynamic manipulation.
@@ -74,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 ## Contributing
 
-Contributions to the Tupp Trigger library are welcome.
+We welcome contributions to the Tupp Trigger library. Your input and suggestions help us to improve and expand the library's capabilities.
 
 ## License
 
