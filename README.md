@@ -4,10 +4,12 @@ Tupp Trigger is a versatile JavaScript library designed to enhance the interacti
 
 ## Features
 
-- **Broad Event Handling**: Supports `input`, `select`, and `textarea` elements.
+- **Broad Event Handling**: Supports `input`, `select`, `textarea`, and `button` elements, including inputs of type `submit`.
+- **Debounce Control**: Debounce mechanism for `input` and `textarea` to optimize API calls.
 - **Simplified API Integration**: Configurable API endpoint through data attributes.
 - **Dynamic Element Manipulation**: Modify content and style of targeted elements in response to API calls.
-- **Flexible Data Source**: Extracts data from specified source elements or from the triggering element itself.
+- **Flexible Data Source**: Extracts data from specified source elements, or from the triggering element itself.
+- **Customizable Debounce Delay**: Option to set a custom debounce delay on elements.
 
 ## Installation
 
@@ -41,8 +43,11 @@ Add the class `tupp-trigger` to your form elements. Configure the library using 
 - `data-tupp-target-class`: (Optional) The class of target elements for dynamic manipulation.
 - `data-tupp-target-action`: (Optional) Action to perform on the target element (`append`, `prepend`, `replace`).
 - `data-tupp-target-style`: (Optional) Inline style to apply to the target element.
+- `data-tupp-debounce-delay`: (Optional) Custom debounce delay in milliseconds for `input` and `textarea` elements.
 
-Example:
+Examples:
+
+Standard input example:
 
 ```html
 <input type="text" class="tupp-trigger" data-tupp-chatflow-id="your-uuid" data-tupp-target-id="result" data-tupp-target-action="replace">
@@ -53,7 +58,7 @@ Submit button example, using another element as a source:
 
 ```html
 <input type="text" id="search_input">
-<input type="submit"  value="Search" class="tupp-trigger" data-tupp-chatflow-id="your-uuid" data-tupp-source-id="search_input" data-tupp-target-id="result" data-tupp-target-action="replace">
+<input type="submit" value="Search" class="tupp-trigger" data-tupp-chatflow-id="your-uuid" data-tupp-source-id="search_input" data-tupp-target-id="result" data-tupp-target-action="replace">
 <div id="result">Original Text</div>
 ```
 
