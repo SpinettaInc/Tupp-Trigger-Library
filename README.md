@@ -6,6 +6,12 @@ Tupp Trigger is a versatile JavaScript library designed to enhance the interacti
 
 Before using the this library, you must have an active account on [Tupp.io](https://tupp.io). Tupp.io allows you to create custom chatflows and logic, which can then be utilized within your web application using this library. Each chatflow in Tupp.io provides a unique UUID, which is essential for configuring this library in your project.
 
+### Alpine.js-Compatible Version
+
+For users who prefer a more declarative approach to UI interactions, we offer an Alpine.js-compatible version of the Tupp Trigger library. This version leverages the simplicity and reactivity of Alpine.js, making it an ideal choice for projects already utilizing this framework.
+
+You can find this Alpine.js-friendly variant in the Alpine folder of our repository. It's tailored to integrate seamlessly with Alpine.js, allowing for a more intuitive and concise implementation of dynamic behaviors in your web applications. For detailed instructions and examples on how to use this version, please refer to the README file located within the Alpine folder.
+
 ## Features
 
 - **Broad Event Handling**: Supports `input`, `select`, `textarea`, and `button` elements, including inputs of type `submit`.
