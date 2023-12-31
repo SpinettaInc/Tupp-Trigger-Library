@@ -23,7 +23,7 @@ Include Alpine.js and the Tupp Trigger library in your HTML file:
 
 ```html
 <script src="//unpkg.com/alpinejs" defer></script>
-<script src="https://cdn.jsdelivr.net/gh/SpinettaInc/Tupp-Trigger-Library/Alpine/tupp-trigger-alpine.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/SpinettaInc/Tupp-Trigger-Library@main/Alpine/tupp-trigger-alpine.min.js" defer></script>
 ```
 
 ### Manual Download
